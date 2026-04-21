@@ -1,9 +1,9 @@
 import { FileText, Cpu, Lightbulb, Handshake } from "lucide-react";
 
 const steps = [
-  { icon: FileText, title: "Submit your research", description: "Upload your thesis, paper, or working draft to your private workspace.", href: "#analyze" },
-  { icon: Cpu, title: "AI analysis & refinement", description: "Our models surface insights, gaps, market signals, and commercial angles.", href: "#analyze" },
-  { icon: Lightbulb, title: "Generate opportunities", description: "Receive startup blueprints, MVP scopes, and IP-ready summaries.", href: "#analyze" },
+  { icon: FileText, title: "Submit your research", description: "Upload your thesis, paper, or working draft to your private workspace.", href: "/upload" },
+  { icon: Cpu, title: "AI analysis & refinement", description: "Our models surface insights, gaps, market signals, and commercial angles.", href: "/upload" },
+  { icon: Lightbulb, title: "Generate opportunities", description: "Receive startup blueprints, MVP scopes, and IP-ready summaries.", href: "/upload" },
   { icon: Handshake, title: "Connect & commercialize", description: "Match with industry partners, mentors, and funders to take it live.", href: "#audience" },
 ];
 
