@@ -1,5 +1,18 @@
 import jsPDF from "jspdf";
 
+type MvpPlan = {
+  name?: string;
+  one_liner?: string;
+  target_user?: string;
+  core_problem?: string;
+  core_features?: string[];
+  out_of_scope?: string[];
+  tech_stack?: string;
+  success_metrics?: string[];
+  timeline_weeks?: number;
+  first_experiment?: string;
+};
+
 type Analysis = {
   title: string;
   canvas_type: "business_model" | "lean";
@@ -7,7 +20,7 @@ type Analysis = {
   value_create: string | null;
   value_deliver: string | null;
   value_capture: string | null;
-  canvas_data: Record<string, string>;
+  canvas_data: Record<string, any>;
   created_at?: string;
 };
 
