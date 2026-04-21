@@ -287,7 +287,7 @@ Deno.serve(async (req) => {
     const schema = canvas_type === "lean" ? leanCanvasSchema : businessModelSchema;
     const systemPrompt = `You are a research commercialization analyst. Read the provided thesis excerpt and extract a ${
       canvas_type === "lean" ? "Lean Canvas" : "Business Model Canvas"
-    } that turns the research into a viable venture. Be concrete, actionable, and grounded in the research. Each canvas field should be 1-3 short sentences. Focus on Africa's innovation ecosystem context where relevant, but stay globally applicable.`;
+    } that turns the research into a viable venture. ALSO produce a pragmatic MVP plan that a small team could ship in 8-12 weeks to validate the core hypothesis. Be concrete, actionable, and grounded in the research. Each canvas field should be 1-3 short sentences. MVP features must be ruthlessly minimal — only what's needed to test the riskiest assumption. Focus on Africa's innovation ecosystem context where relevant, but stay globally applicable.`;
 
     const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
