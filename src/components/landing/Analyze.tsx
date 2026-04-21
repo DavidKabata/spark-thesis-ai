@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Upload, FileText, Sparkles, Download, Loader2, CheckCircle2, X, ClipboardPaste } from "lucide-react";
+import { Upload, FileText, Sparkles, Download, Loader2, CheckCircle2, X, ClipboardPaste, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
