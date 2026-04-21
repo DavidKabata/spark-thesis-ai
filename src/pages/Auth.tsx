@@ -32,7 +32,7 @@ const Auth = () => {
           },
         });
         if (error) throw error;
-        toast({ title: "Welcome to Scholar Spark 🎉", description: "Upload your thesis to get started." });
+        toast({ title: "Welcome to Research Venture Ai 🎉", description: "Upload your thesis to get started." });
         navigate(redirectTo, { replace: true });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
