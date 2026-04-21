@@ -281,5 +281,5 @@ export function downloadAnalysisPdf(a: Analysis) {
   }
 
   const safeName = a.title.replace(/[^a-z0-9]+/gi, "-").toLowerCase().slice(0, 60) || "analysis";
-  doc.save(`scholar-spark-${safeName}.pdf`);
+  doc.save(`research-venture-ai-${safeName}.pdf`);
 }
