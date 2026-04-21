@@ -308,7 +308,7 @@ const Analyze = () => {
               </div>
               <Button
                 onClick={handleAnalyze}
-                disabled={!file || step !== "idle"}
+                disabled={step !== "idle" || (mode === "upload" ? !file : abstract.trim().length < 200)}
                 size="lg"
                 className="w-full bg-primary hover:bg-primary/90 shadow-elegant h-12"
               >
