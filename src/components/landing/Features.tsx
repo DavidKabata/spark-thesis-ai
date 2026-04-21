@@ -25,12 +25,6 @@ const features = [
     description: "IP guidance, licensing pathways, and curated funding opportunities for emerging innovators.",
     accent: false,
   },
-  {
-    icon: Search,
-    title: "Research Discovery Platform",
-    description: "A searchable database of theses, breakthroughs, and innovations across institutions.",
-    accent: false,
-  },
 ];
 
 const Features = () => {
