@@ -33,12 +33,12 @@ const Auth = () => {
         });
         if (error) throw error;
         toast({ title: "Welcome to Scholar Spark 🎉", description: "Upload your thesis to get started." });
-        navigate("/upload", { replace: true });
+        navigate(redirectTo, { replace: true });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast({ title: "Signed in", description: "Ready to upload your thesis." });
-        navigate("/upload", { replace: true });
+        navigate(redirectTo, { replace: true });
       }
     } catch (err: any) {
       toast({
