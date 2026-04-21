@@ -137,7 +137,7 @@ const Analyze = () => {
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto bg-card border border-border rounded-3xl shadow-elegant p-6 md:p-10">
+        <div id="analyze-form" className="max-w-4xl mx-auto bg-card border border-border rounded-3xl shadow-elegant p-6 md:p-10 scroll-mt-24">
           {!user && !authLoading && (
             <div className="text-center py-10">
               <div className="inline-flex h-14 w-14 rounded-2xl bg-spark items-center justify-center mb-4">
