@@ -358,7 +358,7 @@ export function downloadAnalysisPdf(a: Analysis) {
 
   const blocks = a.canvas_type === "lean" ? LEAN_BLOCKS : BMC_BLOCKS;
   blocks.forEach(([key, label]) => {
-    const body = a.canvas_data?.[key] || "—";
+    const body = String(a.canvas_data?.[key] ?? "—");
     const lines = doc.splitTextToSize(body, contentW - 24);
     const blockH = 28 + lines.length * 12 + 12;
     if (y + blockH > pageH - margin) {
