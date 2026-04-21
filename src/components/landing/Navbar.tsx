@@ -23,18 +23,18 @@ const Navbar = () => {
         </Link>
 
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-          <a href="#analyze" className="hover:text-foreground transition-smooth">Analyze</a>
-          <a href="#features" className="hover:text-foreground transition-smooth">Features</a>
-          <a href="#how" className="hover:text-foreground transition-smooth">How it works</a>
-          <a href="#audience" className="hover:text-foreground transition-smooth">For You</a>
-          <a href="#impact" className="hover:text-foreground transition-smooth">Impact</a>
+          <Link to="/upload" className="hover:text-foreground transition-smooth">Upload</Link>
+          <a href="/#features" className="hover:text-foreground transition-smooth">Features</a>
+          <a href="/#how" className="hover:text-foreground transition-smooth">How it works</a>
+          <a href="/#audience" className="hover:text-foreground transition-smooth">For You</a>
+          <a href="/#impact" className="hover:text-foreground transition-smooth">Impact</a>
         </div>
 
         <div className="flex items-center gap-2">
           {user ? (
             <>
               <Button asChild size="sm" className="bg-primary hover:bg-primary/90 shadow-card">
-                <a href="#analyze">Analyze thesis</a>
+                <Link to="/upload">Upload thesis</Link>
               </Button>
               <Button
                 variant="ghost"
