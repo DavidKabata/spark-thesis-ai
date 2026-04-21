@@ -83,7 +83,7 @@ const LEAN_LAYOUT: Cell[] = [
 function drawCanvasDiagram(
   doc: jsPDF,
   layout: Cell[],
-  data: Record<string, string>,
+  data: Record<string, any>,
   x: number,
   y: number,
   width: number,
