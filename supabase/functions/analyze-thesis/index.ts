@@ -13,17 +13,11 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
 
 async function extractTextFromPdf(bytes: Uint8Array): Promise<string> {
-  // Lightweight PDF text extraction using pdf.js (Deno-compatible build)
-  const pdfjs = await import("https://esm.sh/pdfjs-serverless@0.5.0");
-  const doc = await pdfjs.getDocument({ data: bytes, useSystemFonts: true }).promise;
-  let text = "";
-  const max = Math.min(doc.numPages, 60);
-  for (let i = 1; i <= max; i++) {
-    const page = await doc.getPage(i);
-    const content = await page.getTextContent();
-    text += content.items.map((it: any) => it.str).join(" ") + "\n";
-  }
-  return text;
+  // Use unpdf — a serverless-friendly PDF text extractor (no native deps)
+  const { extractText, getDocumentProxy } = await import("https://esm.sh/unpdf@0.12.1");
+  const pdf = await getDocumentProxy(bytes);
+  const { text } = await extractText(pdf, { mergePages: true });
+  return typeof text === "string" ? text : (Array.isArray(text) ? text.join("\n") : "");
 }
 
 async function extractTextFromDocx(bytes: Uint8Array): Promise<string> {
