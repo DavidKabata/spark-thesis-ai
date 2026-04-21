@@ -118,10 +118,13 @@ const Analyze = () => {
     <section id="analyze" className="py-24 bg-background relative scroll-mt-20">
       <div className="container">
         <div className="max-w-3xl mx-auto text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary border border-border text-xs font-medium text-secondary-foreground mb-5">
+          <a
+            href={user ? "#analyze-form" : "/auth"}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary border border-border text-xs font-medium text-secondary-foreground mb-5 hover:bg-card hover:border-primary/40 transition-smooth cursor-pointer"
+          >
             <Sparkles className="h-3.5 w-3.5 text-accent" />
             Try it now
-          </div>
+          </a>
           <h2 className="font-display text-4xl md:text-5xl font-semibold tracking-tight leading-[1.1] mb-4">
             Upload your thesis.{" "}
             <span className="text-gradient italic font-normal">Get a venture blueprint.</span>
@@ -134,7 +137,7 @@ const Analyze = () => {
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto bg-card border border-border rounded-3xl shadow-elegant p-6 md:p-10">
+        <div id="analyze-form" className="max-w-4xl mx-auto bg-card border border-border rounded-3xl shadow-elegant p-6 md:p-10 scroll-mt-24">
           {!user && !authLoading && (
             <div className="text-center py-10">
               <div className="inline-flex h-14 w-14 rounded-2xl bg-spark items-center justify-center mb-4">
