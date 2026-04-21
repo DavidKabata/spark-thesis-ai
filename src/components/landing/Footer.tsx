@@ -18,7 +18,7 @@ const Footer = () => {
                 <Sparkles className="h-4 w-4 text-accent-foreground" strokeWidth={2.5} />
               </div>
               <span className="font-display text-xl font-semibold tracking-tight">
-                Scholar<span className="text-gradient-spark">Spark</span>
+                Research <span className="text-gradient-spark">Venture Ai</span>
               </span>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
@@ -43,7 +43,7 @@ const Footer = () => {
         </div>
 
         <div className="pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} Scholar Spark. Built for the next generation of innovators.</p>
+          <p>© {new Date().getFullYear()} Research Venture Ai. Built for the next generation of innovators.</p>
           <p className="font-display italic">Made with intention in Africa 🌍</p>
         </div>
       </div>

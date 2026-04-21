@@ -32,7 +32,7 @@ const Auth = () => {
           },
         });
         if (error) throw error;
-        toast({ title: "Welcome to Scholar Spark 🎉", description: "Upload your thesis to get started." });
+        toast({ title: "Welcome to Research Venture Ai 🎉", description: "Upload your thesis to get started." });
         navigate(redirectTo, { replace: true });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -59,7 +59,7 @@ const Auth = () => {
             <Sparkles className="h-4 w-4 text-accent-foreground" strokeWidth={2.5} />
           </div>
           <span className="font-display text-xl font-semibold tracking-tight">
-            Scholar<span className="text-gradient-spark">Spark</span>
+            Research <span className="text-gradient-spark">Venture Ai</span>
           </span>
         </Link>
 

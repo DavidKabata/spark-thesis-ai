@@ -23,7 +23,7 @@ const Impact = () => {
           </h2>
           <p className="text-lg text-primary-foreground/70 leading-relaxed">
             Africa graduates over 100,000 postgraduates each year — yet most of their
-            research never leaves the library. Scholar Spark closes that gap.
+            research never leaves the library. Research Venture Ai closes that gap.
           </p>
         </div>
 
