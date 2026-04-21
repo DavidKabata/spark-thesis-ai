@@ -59,7 +59,7 @@ const Auth = () => {
             <Sparkles className="h-4 w-4 text-accent-foreground" strokeWidth={2.5} />
           </div>
           <span className="font-display text-xl font-semibold tracking-tight">
-            Scholar<span className="text-gradient-spark">Spark</span>
+            Research <span className="text-gradient-spark">Venture Ai</span>
           </span>
         </Link>
 
