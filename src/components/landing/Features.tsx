@@ -1,4 +1,4 @@
-import { Brain, Rocket, Building2, Scale, Search } from "lucide-react";
+import { Brain, Rocket, Building2, Scale } from "lucide-react";
 
 const features = [
   {
