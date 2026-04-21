@@ -26,9 +26,57 @@ async function extractTextFromDocx(bytes: Uint8Array): Promise<string> {
   return result.value || "";
 }
 
+const mvpSchema = {
+  type: "object",
+  description: "A pragmatic MVP plan to validate the venture in 8-12 weeks.",
+  properties: {
+    name: { type: "string", description: "Catchy MVP / product name (2-5 words)." },
+    one_liner: { type: "string", description: "One-sentence pitch (max 25 words)." },
+    target_user: { type: "string", description: "The single beachhead user/segment to validate first." },
+    core_problem: { type: "string", description: "The specific pain the MVP addresses." },
+    core_features: {
+      type: "array",
+      description: "3-5 must-have features for the first usable version. Cut everything non-essential.",
+      items: { type: "string" },
+      minItems: 3,
+      maxItems: 5,
+    },
+    out_of_scope: {
+      type: "array",
+      description: "2-4 things explicitly NOT in the MVP to stay focused.",
+      items: { type: "string" },
+      minItems: 2,
+      maxItems: 4,
+    },
+    tech_stack: { type: "string", description: "Recommended lightweight tech / tools to ship fast (1-2 sentences)." },
+    success_metrics: {
+      type: "array",
+      description: "2-4 measurable signals that prove the MVP is working.",
+      items: { type: "string" },
+      minItems: 2,
+      maxItems: 4,
+    },
+    timeline_weeks: { type: "integer", description: "Estimated weeks to ship MVP (4-16)." },
+    first_experiment: { type: "string", description: "The first concrete validation experiment to run after launch." },
+  },
+  required: [
+    "name",
+    "one_liner",
+    "target_user",
+    "core_problem",
+    "core_features",
+    "out_of_scope",
+    "tech_stack",
+    "success_metrics",
+    "timeline_weeks",
+    "first_experiment",
+  ],
+  additionalProperties: false,
+};
+
 const businessModelSchema = {
   name: "extract_business_model_canvas",
-  description: "Extract a Business Model Canvas + value pillars + executive summary from a thesis.",
+  description: "Extract a Business Model Canvas + value pillars + executive summary + MVP plan from a thesis.",
   parameters: {
     type: "object",
     properties: {
@@ -75,15 +123,16 @@ const businessModelSchema = {
         ],
         additionalProperties: false,
       },
+      mvp: mvpSchema,
     },
-    required: ["title", "executive_summary", "value_create", "value_deliver", "value_capture", "canvas"],
+    required: ["title", "executive_summary", "value_create", "value_deliver", "value_capture", "canvas", "mvp"],
     additionalProperties: false,
   },
 };
 
 const leanCanvasSchema = {
   name: "extract_lean_canvas",
-  description: "Extract a Lean Canvas + value pillars + executive summary from a thesis.",
+  description: "Extract a Lean Canvas + value pillars + executive summary + MVP plan from a thesis.",
   parameters: {
     type: "object",
     properties: {
@@ -118,8 +167,9 @@ const leanCanvasSchema = {
         ],
         additionalProperties: false,
       },
+      mvp: mvpSchema,
     },
-    required: ["title", "executive_summary", "value_create", "value_deliver", "value_capture", "canvas"],
+    required: ["title", "executive_summary", "value_create", "value_deliver", "value_capture", "canvas", "mvp"],
     additionalProperties: false,
   },
 };
@@ -237,7 +287,7 @@ Deno.serve(async (req) => {
     const schema = canvas_type === "lean" ? leanCanvasSchema : businessModelSchema;
     const systemPrompt = `You are a research commercialization analyst. Read the provided thesis excerpt and extract a ${
       canvas_type === "lean" ? "Lean Canvas" : "Business Model Canvas"
-    } that turns the research into a viable venture. Be concrete, actionable, and grounded in the research. Each canvas field should be 1-3 short sentences. Focus on Africa's innovation ecosystem context where relevant, but stay globally applicable.`;
+    } that turns the research into a viable venture. ALSO produce a pragmatic MVP plan that a small team could ship in 8-12 weeks to validate the core hypothesis. Be concrete, actionable, and grounded in the research. Each canvas field should be 1-3 short sentences. MVP features must be ruthlessly minimal — only what's needed to test the riskiest assumption. Focus on Africa's innovation ecosystem context where relevant, but stay globally applicable.`;
 
     const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -301,7 +351,7 @@ Deno.serve(async (req) => {
         value_create: parsed.value_create,
         value_deliver: parsed.value_deliver,
         value_capture: parsed.value_capture,
-        canvas_data: parsed.canvas,
+        canvas_data: { ...parsed.canvas, __mvp: parsed.mvp ?? null },
       })
       .select()
       .single();
