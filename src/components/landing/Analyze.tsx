@@ -1,7 +1,8 @@
 import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
-import { Upload, FileText, Sparkles, Download, Loader2, CheckCircle2, X } from "lucide-react";
+import { Upload, FileText, Sparkles, Download, Loader2, CheckCircle2, X, ClipboardPaste } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
@@ -9,6 +10,7 @@ import { downloadAnalysisPdf } from "@/lib/reportPdf";
 import { cn } from "@/lib/utils";
 
 type CanvasType = "business_model" | "lean";
+type InputMode = "upload" | "paste";
 
 type Analysis = {
   id: string;
