@@ -18,7 +18,7 @@ const Hero = () => {
           </div>
 
           <h1 className="font-display text-5xl md:text-7xl lg:text-[5.5rem] leading-[1.05] tracking-tight font-semibold mb-6">
-            Turning theses into{" "}
+            Turning research into{" "}
             <span className="text-gradient">industry-ready</span>{" "}
             <span className="italic font-normal">innovation</span>{" "}
             through AI
