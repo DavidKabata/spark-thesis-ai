@@ -30,13 +30,19 @@ const Auth = () => {
           },
         });
         if (error) throw error;
-        toast({ title: "Welcome to Scholar Spark 🎉", description: "You're signed in." });
-        navigate("/#analyze");
+        toast({ title: "Welcome to Scholar Spark 🎉", description: "Upload your thesis to get started." });
+        navigate("/", { state: { scrollTo: "analyze" }, replace: true });
+        setTimeout(() => {
+          document.getElementById("analyze")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 150);
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        toast({ title: "Signed in", description: "Welcome back." });
-        navigate("/#analyze");
+        toast({ title: "Signed in", description: "Ready to analyze your thesis." });
+        navigate("/", { state: { scrollTo: "analyze" }, replace: true });
+        setTimeout(() => {
+          document.getElementById("analyze")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 150);
       }
     } catch (err: any) {
       toast({
