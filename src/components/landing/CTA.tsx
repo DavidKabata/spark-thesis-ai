@@ -1,9 +1,35 @@
 import { ArrowRight } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 
 const CTA = () => {
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      toast({
+        title: "Invalid email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setSubmitting(true);
+    setTimeout(() => {
+      toast({
+        title: "You're on the list! 🎉",
+        description: `We'll reach out to ${email} with early access details.`,
+      });
+      setEmail("");
+      setSubmitting(false);
+    }, 600);
+  };
+
   return (
-    <section className="py-28 bg-soft relative overflow-hidden">
+    <section id="join" className="py-28 bg-soft relative overflow-hidden scroll-mt-20">
       <div className="absolute inset-0 bg-mesh pointer-events-none" />
       <div className="container relative">
         <div className="max-w-4xl mx-auto text-center">
@@ -16,14 +42,22 @@ const CTA = () => {
             of research commercialization.
           </p>
 
-          <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
             <input
               type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="you@university.edu"
               className="flex-1 h-12 px-4 rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-smooth"
             />
-            <Button size="lg" className="bg-primary hover:bg-primary/90 shadow-elegant group h-12 px-6">
-              Get early access
+            <Button
+              type="submit"
+              size="lg"
+              disabled={submitting}
+              className="bg-primary hover:bg-primary/90 shadow-elegant group h-12 px-6"
+            >
+              {submitting ? "Joining..." : "Get early access"}
               <ArrowRight className="ml-1 h-4 w-4 transition-smooth group-hover:translate-x-1" />
             </Button>
           </form>

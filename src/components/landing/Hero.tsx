@@ -30,12 +30,14 @@ const Hero = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-16">
-            <Button size="lg" className="bg-primary hover:bg-primary/90 shadow-elegant group h-12 px-6">
-              Join the platform
-              <ArrowRight className="ml-1 h-4 w-4 transition-smooth group-hover:translate-x-1" />
+            <Button size="lg" className="bg-primary hover:bg-primary/90 shadow-elegant group h-12 px-6" asChild>
+              <a href="#join">
+                Join the platform
+                <ArrowRight className="ml-1 h-4 w-4 transition-smooth group-hover:translate-x-1" />
+              </a>
             </Button>
-            <Button size="lg" variant="outline" className="h-12 px-6 border-border hover:bg-secondary">
-              See how it works
+            <Button size="lg" variant="outline" className="h-12 px-6 border-border hover:bg-secondary" asChild>
+              <a href="#how">See how it works</a>
             </Button>
           </div>
         </div>

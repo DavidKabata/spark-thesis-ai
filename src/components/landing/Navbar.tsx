@@ -25,9 +25,11 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" className="hidden sm:inline-flex">Sign in</Button>
-          <Button size="sm" className="bg-primary hover:bg-primary/90 shadow-card">
-            Join platform
+          <Button variant="ghost" size="sm" className="hidden sm:inline-flex" asChild>
+            <a href="#join">Sign in</a>
+          </Button>
+          <Button size="sm" className="bg-primary hover:bg-primary/90 shadow-card" asChild>
+            <a href="#join">Join platform</a>
           </Button>
         </div>
       </nav>
