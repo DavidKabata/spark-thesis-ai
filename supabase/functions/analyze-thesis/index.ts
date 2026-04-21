@@ -132,7 +132,7 @@ const businessModelSchema = {
 
 const leanCanvasSchema = {
   name: "extract_lean_canvas",
-  description: "Extract a Lean Canvas + value pillars + executive summary from a thesis.",
+  description: "Extract a Lean Canvas + value pillars + executive summary + MVP plan from a thesis.",
   parameters: {
     type: "object",
     properties: {
@@ -167,8 +167,9 @@ const leanCanvasSchema = {
         ],
         additionalProperties: false,
       },
+      mvp: mvpSchema,
     },
-    required: ["title", "executive_summary", "value_create", "value_deliver", "value_capture", "canvas"],
+    required: ["title", "executive_summary", "value_create", "value_deliver", "value_capture", "canvas", "mvp"],
     additionalProperties: false,
   },
 };
