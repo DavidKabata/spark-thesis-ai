@@ -152,59 +152,107 @@ const Analyze = () => {
 
           {user && step !== "done" && (
             <>
-              {/* Step 1: Upload */}
+              {/* Step 1: Submit research */}
               <div className="mb-8">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold">1</div>
-                  <h3 className="font-display text-lg font-semibold">Upload your thesis</h3>
+                  <h3 className="font-display text-lg font-semibold">Submit your research</h3>
                 </div>
 
-                <label
-                  onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-                  onDragLeave={() => setDragOver(false)}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    setDragOver(false);
-                    onPickFile(e.dataTransfer.files?.[0] || null);
-                  }}
-                  className={cn(
-                    "block border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-smooth",
-                    dragOver ? "border-primary bg-primary/5" : "border-border hover:border-primary/50 hover:bg-secondary/50",
-                  )}
-                >
-                  <input
-                    type="file"
-                    accept=".pdf,.docx"
-                    className="hidden"
-                    onChange={(e) => onPickFile(e.target.files?.[0] || null)}
-                    disabled={step !== "idle"}
-                  />
-                  {file ? (
-                    <div className="flex items-center justify-center gap-3">
-                      <FileText className="h-8 w-8 text-primary" />
-                      <div className="text-left">
-                        <div className="font-medium text-foreground">{file.name}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {(file.size / 1024 / 1024).toFixed(2)} MB · Click to change
+                {/* Mode toggle */}
+                <div className="inline-flex p-1 rounded-xl bg-secondary border border-border mb-4">
+                  <button
+                    type="button"
+                    onClick={() => setMode("upload")}
+                    className={cn(
+                      "px-4 py-2 rounded-lg text-sm font-medium transition-smooth flex items-center gap-2",
+                      mode === "upload"
+                        ? "bg-card text-foreground shadow-card"
+                        : "text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    <Upload className="h-4 w-4" />
+                    Upload thesis
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMode("paste")}
+                    className={cn(
+                      "px-4 py-2 rounded-lg text-sm font-medium transition-smooth flex items-center gap-2",
+                      mode === "paste"
+                        ? "bg-card text-foreground shadow-card"
+                        : "text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    <ClipboardPaste className="h-4 w-4" />
+                    Paste abstract
+                  </button>
+                </div>
+
+                {mode === "upload" ? (
+                  <label
+                    onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                    onDragLeave={() => setDragOver(false)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setDragOver(false);
+                      onPickFile(e.dataTransfer.files?.[0] || null);
+                    }}
+                    className={cn(
+                      "block border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-smooth",
+                      dragOver ? "border-primary bg-primary/5" : "border-border hover:border-primary/50 hover:bg-secondary/50",
+                    )}
+                  >
+                    <input
+                      type="file"
+                      accept=".pdf,.docx"
+                      className="hidden"
+                      onChange={(e) => onPickFile(e.target.files?.[0] || null)}
+                      disabled={step !== "idle"}
+                    />
+                    {file ? (
+                      <div className="flex items-center justify-center gap-3">
+                        <FileText className="h-8 w-8 text-primary" />
+                        <div className="text-left">
+                          <div className="font-medium text-foreground">{file.name}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {(file.size / 1024 / 1024).toFixed(2)} MB · Click to change
+                          </div>
                         </div>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.preventDefault(); setFile(null); }}
+                          className="ml-2 p-1 rounded hover:bg-secondary"
+                          aria-label="Remove file"
+                        >
+                          <X className="h-4 w-4 text-muted-foreground" />
+                        </button>
                       </div>
-                      <button
-                        type="button"
-                        onClick={(e) => { e.preventDefault(); setFile(null); }}
-                        className="ml-2 p-1 rounded hover:bg-secondary"
-                        aria-label="Remove file"
-                      >
-                        <X className="h-4 w-4 text-muted-foreground" />
-                      </button>
+                    ) : (
+                      <div className="flex flex-col items-center gap-2">
+                        <Upload className="h-8 w-8 text-muted-foreground" />
+                        <div className="font-medium text-foreground">Drag & drop or click to upload</div>
+                        <div className="text-xs text-muted-foreground">PDF or DOCX · Max 20MB</div>
+                      </div>
+                    )}
+                  </label>
+                ) : (
+                  <div>
+                    <Textarea
+                      value={abstract}
+                      onChange={(e) => setAbstract(e.target.value)}
+                      placeholder="Paste your thesis abstract, summary, or key chapters here. The more context you provide, the sharper the business model. Minimum 200 characters."
+                      className="min-h-[200px] resize-y text-sm leading-relaxed"
+                      disabled={step !== "idle"}
+                    />
+                    <div className="flex justify-between items-center mt-2 text-xs text-muted-foreground">
+                      <span>Minimum 200 characters</span>
+                      <span className={cn(abstract.length >= 200 ? "text-primary font-medium" : "")}>
+                        {abstract.length.toLocaleString()} characters
+                      </span>
                     </div>
-                  ) : (
-                    <div className="flex flex-col items-center gap-2">
-                      <Upload className="h-8 w-8 text-muted-foreground" />
-                      <div className="font-medium text-foreground">Drag & drop or click to upload</div>
-                      <div className="text-xs text-muted-foreground">PDF or DOCX · Max 20MB</div>
-                    </div>
-                  )}
-                </label>
+                  </div>
+                )}
               </div>
 
               {/* Step 2: Canvas choice */}
