@@ -26,9 +26,57 @@ async function extractTextFromDocx(bytes: Uint8Array): Promise<string> {
   return result.value || "";
 }
 
+const mvpSchema = {
+  type: "object",
+  description: "A pragmatic MVP plan to validate the venture in 8-12 weeks.",
+  properties: {
+    name: { type: "string", description: "Catchy MVP / product name (2-5 words)." },
+    one_liner: { type: "string", description: "One-sentence pitch (max 25 words)." },
+    target_user: { type: "string", description: "The single beachhead user/segment to validate first." },
+    core_problem: { type: "string", description: "The specific pain the MVP addresses." },
+    core_features: {
+      type: "array",
+      description: "3-5 must-have features for the first usable version. Cut everything non-essential.",
+      items: { type: "string" },
+      minItems: 3,
+      maxItems: 5,
+    },
+    out_of_scope: {
+      type: "array",
+      description: "2-4 things explicitly NOT in the MVP to stay focused.",
+      items: { type: "string" },
+      minItems: 2,
+      maxItems: 4,
+    },
+    tech_stack: { type: "string", description: "Recommended lightweight tech / tools to ship fast (1-2 sentences)." },
+    success_metrics: {
+      type: "array",
+      description: "2-4 measurable signals that prove the MVP is working.",
+      items: { type: "string" },
+      minItems: 2,
+      maxItems: 4,
+    },
+    timeline_weeks: { type: "integer", description: "Estimated weeks to ship MVP (4-16)." },
+    first_experiment: { type: "string", description: "The first concrete validation experiment to run after launch." },
+  },
+  required: [
+    "name",
+    "one_liner",
+    "target_user",
+    "core_problem",
+    "core_features",
+    "out_of_scope",
+    "tech_stack",
+    "success_metrics",
+    "timeline_weeks",
+    "first_experiment",
+  ],
+  additionalProperties: false,
+};
+
 const businessModelSchema = {
   name: "extract_business_model_canvas",
-  description: "Extract a Business Model Canvas + value pillars + executive summary from a thesis.",
+  description: "Extract a Business Model Canvas + value pillars + executive summary + MVP plan from a thesis.",
   parameters: {
     type: "object",
     properties: {
@@ -75,8 +123,9 @@ const businessModelSchema = {
         ],
         additionalProperties: false,
       },
+      mvp: mvpSchema,
     },
-    required: ["title", "executive_summary", "value_create", "value_deliver", "value_capture", "canvas"],
+    required: ["title", "executive_summary", "value_create", "value_deliver", "value_capture", "canvas", "mvp"],
     additionalProperties: false,
   },
 };
