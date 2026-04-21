@@ -223,6 +223,104 @@ export function downloadAnalysisPdf(a: Analysis) {
     y += lines.length * 13 + 10;
   });
 
+  // ---- MVP Page ----
+  const mvp: MvpPlan | null = (a.canvas_data?.__mvp as MvpPlan) || null;
+  if (mvp) {
+    doc.addPage();
+    let my = margin;
+
+    doc.setFillColor(217, 119, 6);
+    doc.rect(0, 0, pageW, 90, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.text("MINIMUM VIABLE PRODUCT", margin, 40);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.text("Ship in weeks. Validate the riskiest assumption first.", margin, 56);
+    if (mvp.timeline_weeks) {
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
+      doc.text(`~${mvp.timeline_weeks} weeks`, pageW - margin, 50, { align: "right" });
+    }
+
+    my = 120;
+    doc.setTextColor(20, 24, 56);
+    if (mvp.name) {
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(22);
+      const nameLines = doc.splitTextToSize(mvp.name, contentW);
+      doc.text(nameLines, margin, my);
+      my += nameLines.length * 24 + 4;
+    }
+    if (mvp.one_liner) {
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(12);
+      doc.setTextColor(80, 80, 100);
+      const olLines = doc.splitTextToSize(mvp.one_liner, contentW);
+      doc.text(olLines, margin, my);
+      my += olLines.length * 15 + 18;
+    }
+
+    const drawLabeledBlock = (label: string, body: string | null | undefined) => {
+      if (!body) return;
+      const lines = doc.splitTextToSize(body, contentW);
+      const blockH = 18 + lines.length * 13 + 10;
+      if (my + blockH > pageH - margin) {
+        doc.addPage();
+        my = margin;
+      }
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+      doc.setTextColor(217, 119, 6);
+      doc.text(label.toUpperCase(), margin, my);
+      my += 14;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10.5);
+      doc.setTextColor(40, 40, 60);
+      doc.text(lines, margin, my);
+      my += lines.length * 13 + 14;
+    };
+
+    const drawBulletBlock = (label: string, items: string[] | undefined, color: [number, number, number]) => {
+      if (!items || items.length === 0) return;
+      let totalLines = 0;
+      const wrapped = items.map((it) => {
+        const w = doc.splitTextToSize(`•  ${it}`, contentW - 8);
+        totalLines += w.length;
+        return w;
+      });
+      const blockH = 18 + totalLines * 13 + 10;
+      if (my + blockH > pageH - margin) {
+        doc.addPage();
+        my = margin;
+      }
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+      doc.setTextColor(color[0], color[1], color[2]);
+      doc.text(label.toUpperCase(), margin, my);
+      my += 14;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10.5);
+      doc.setTextColor(40, 40, 60);
+      wrapped.forEach((w) => {
+        doc.text(w, margin + 4, my);
+        my += w.length * 13;
+      });
+      my += 12;
+    };
+
+    drawLabeledBlock("Target user", mvp.target_user);
+    drawLabeledBlock("Core problem", mvp.core_problem);
+    drawBulletBlock("Core MVP features", mvp.core_features, [20, 24, 56]);
+    drawBulletBlock("Out of scope (for now)", mvp.out_of_scope, [140, 30, 30]);
+    drawLabeledBlock("Recommended stack", mvp.tech_stack);
+    drawBulletBlock("Success metrics", mvp.success_metrics, [20, 100, 70]);
+    drawLabeledBlock("First experiment to run", mvp.first_experiment);
+
+    y = my;
+  }
+
   // ---- Canvas Diagram Page (landscape-style full-bleed grid) ----
   doc.addPage();
   const dpMargin = 36;
