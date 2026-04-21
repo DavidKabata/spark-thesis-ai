@@ -14,15 +14,14 @@ const Index = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.hash) {
-      const id = location.hash.replace("#", "");
-      // Wait for sections to mount before scrolling
+    const target = location.hash?.replace("#", "") || (location.state as any)?.scrollTo;
+    if (target) {
       const t = setTimeout(() => {
-        document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 100);
+        document.getElementById(target)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 150);
       return () => clearTimeout(t);
     }
-  }, [location.hash, location.key]);
+  }, [location.hash, location.key, location.state]);
 
   return (
     <main className="min-h-screen bg-background">
