@@ -377,6 +377,14 @@ const ResultView = ({ analysis, onReset }: { analysis: Analysis; onReset: () => 
 
   return (
     <div className="animate-fade-up">
+      <Link
+        to="/"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-smooth mb-4 -ml-1"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to home
+      </Link>
+
       <div className="flex items-start justify-between gap-4 mb-2">
         <div>
           <div className="text-xs uppercase tracking-wide text-muted-foreground mb-1">{canvasLabel}</div>
