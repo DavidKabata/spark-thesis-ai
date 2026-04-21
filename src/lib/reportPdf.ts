@@ -142,7 +142,7 @@ export function downloadAnalysisPdf(a: Analysis) {
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
-  doc.text("SCHOLAR SPARK", margin, 50);
+  doc.text("RESEARCH VENTURE AI", margin, 50);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.text("Research Commercialization Report", margin, 66);
