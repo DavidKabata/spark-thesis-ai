@@ -1,4 +1,5 @@
 import { ArrowRight, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-spark.jpg";
 
@@ -31,8 +32,8 @@ const Hero = () => {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-16">
             <Button size="lg" className="bg-primary hover:bg-primary/90 shadow-elegant group h-12 px-6" asChild>
-              <a href="#join">
-                Join the platform
+              <a href="#analyze">
+                Analyze your thesis
                 <ArrowRight className="ml-1 h-4 w-4 transition-smooth group-hover:translate-x-1" />
               </a>
             </Button>
