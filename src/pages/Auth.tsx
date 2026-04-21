@@ -31,18 +31,12 @@ const Auth = () => {
         });
         if (error) throw error;
         toast({ title: "Welcome to Scholar Spark 🎉", description: "Upload your thesis to get started." });
-        navigate("/", { state: { scrollTo: "analyze" }, replace: true });
-        setTimeout(() => {
-          document.getElementById("analyze")?.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 150);
+        navigate("/upload", { replace: true });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        toast({ title: "Signed in", description: "Ready to analyze your thesis." });
-        navigate("/", { state: { scrollTo: "analyze" }, replace: true });
-        setTimeout(() => {
-          document.getElementById("analyze")?.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 150);
+        toast({ title: "Signed in", description: "Ready to upload your thesis." });
+        navigate("/upload", { replace: true });
       }
     } catch (err: any) {
       toast({
