@@ -154,54 +154,78 @@ Deno.serve(async (req) => {
     }
     const userId = userData.user.id;
 
-    const { file_path, canvas_type } = await req.json();
-    if (!file_path || !["business_model", "lean"].includes(canvas_type)) {
-      return new Response(JSON.stringify({ error: "Invalid input" }), {
+    const body = await req.json();
+    const { file_path, canvas_type, abstract_text } = body || {};
+    if (!["business_model", "lean"].includes(canvas_type)) {
+      return new Response(JSON.stringify({ error: "Invalid canvas type" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (!file_path && !abstract_text) {
+      return new Response(JSON.stringify({ error: "Provide a file_path or abstract_text" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Ensure file belongs to this user (path starts with userId/)
-    if (!file_path.startsWith(`${userId}/`)) {
-      return new Response(JSON.stringify({ error: "Forbidden" }), {
-        status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-    const { data: fileData, error: dlErr } = await adminClient.storage
-      .from("theses")
-      .download(file_path);
-    if (dlErr || !fileData) {
-      console.error("Download error", dlErr);
-      return new Response(JSON.stringify({ error: "Could not download file" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const bytes = new Uint8Array(await fileData.arrayBuffer());
-    const lower = file_path.toLowerCase();
     let text = "";
-    try {
-      if (lower.endsWith(".pdf")) {
-        text = await extractTextFromPdf(bytes);
-      } else if (lower.endsWith(".docx")) {
-        text = await extractTextFromDocx(bytes);
-      } else {
-        return new Response(JSON.stringify({ error: "Only PDF or DOCX supported" }), {
-          status: 400,
+
+    if (abstract_text) {
+      if (typeof abstract_text !== "string" || abstract_text.length < 200) {
+        return new Response(
+          JSON.stringify({ error: "Abstract is too short — please provide at least 200 characters." }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      if (abstract_text.length > 30000) {
+        return new Response(
+          JSON.stringify({ error: "Abstract is too long — keep it under 30,000 characters." }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      text = abstract_text;
+    } else {
+      // Ensure file belongs to this user (path starts with userId/)
+      if (!file_path.startsWith(`${userId}/`)) {
+        return new Response(JSON.stringify({ error: "Forbidden" }), {
+          status: 403,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-    } catch (e) {
-      console.error("Extract error", e);
-      return new Response(
-        JSON.stringify({ error: "Failed to extract text from document" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+
+      const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+      const { data: fileData, error: dlErr } = await adminClient.storage
+        .from("theses")
+        .download(file_path);
+      if (dlErr || !fileData) {
+        console.error("Download error", dlErr);
+        return new Response(JSON.stringify({ error: "Could not download file" }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const bytes = new Uint8Array(await fileData.arrayBuffer());
+      const lower = file_path.toLowerCase();
+      try {
+        if (lower.endsWith(".pdf")) {
+          text = await extractTextFromPdf(bytes);
+        } else if (lower.endsWith(".docx")) {
+          text = await extractTextFromDocx(bytes);
+        } else {
+          return new Response(JSON.stringify({ error: "Only PDF or DOCX supported" }), {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+      } catch (e) {
+        console.error("Extract error", e);
+        return new Response(
+          JSON.stringify({ error: "Failed to extract text from document" }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
     }
 
     text = text.replace(/\s+/g, " ").trim();
