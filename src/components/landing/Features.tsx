@@ -1,4 +1,4 @@
-import { Brain, Rocket, Building2, Scale, Search } from "lucide-react";
+import { Brain, Rocket, Building2, Scale } from "lucide-react";
 
 const features = [
   {
@@ -23,12 +23,6 @@ const features = [
     icon: Scale,
     title: "Commercialization Toolkit",
     description: "IP guidance, licensing pathways, and curated funding opportunities for emerging innovators.",
-    accent: false,
-  },
-  {
-    icon: Search,
-    title: "Research Discovery Platform",
-    description: "A searchable database of theses, breakthroughs, and innovations across institutions.",
     accent: false,
   },
 ];
