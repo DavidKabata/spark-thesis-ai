@@ -289,36 +289,54 @@ Deno.serve(async (req) => {
       canvas_type === "lean" ? "Lean Canvas" : "Business Model Canvas"
     } that turns the research into a viable venture. ALSO produce a pragmatic MVP plan that a small team could ship in 8-12 weeks to validate the core hypothesis. Be concrete, actionable, and grounded in the research. Each canvas field should be 1-3 short sentences. MVP features must be ruthlessly minimal — only what's needed to test the riskiest assumption. Focus on Africa's innovation ecosystem context where relevant, but stay globally applicable.`;
 
-    const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: `Thesis excerpt:\n\n${excerpt}` },
-        ],
-        tools: [{ type: "function", function: schema }],
-        tool_choice: { type: "function", function: { name: schema.name } },
-      }),
-    });
+    // Retry on transient gateway/server errors (502/503/504) up to 3 times
+    let aiResp: Response | null = null;
+    let lastErrText = "";
+    for (let attempt = 0; attempt < 3; attempt++) {
+      aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: `Thesis excerpt:\n\n${excerpt}` },
+          ],
+          tools: [{ type: "function", function: schema }],
+          tool_choice: { type: "function", function: { name: schema.name } },
+        }),
+      });
 
-    if (!aiResp.ok) {
-      const errText = await aiResp.text();
-      console.error("AI error", aiResp.status, errText);
-      if (aiResp.status === 429) {
+      if (aiResp.ok) break;
+      if (![502, 503, 504].includes(aiResp.status)) break;
+
+      lastErrText = await aiResp.text().catch(() => "");
+      console.warn(`AI gateway ${aiResp.status} (attempt ${attempt + 1}/3) — retrying...`);
+      await new Promise((r) => setTimeout(r, 800 * (attempt + 1)));
+    }
+
+    if (!aiResp || !aiResp.ok) {
+      const errText = lastErrText || (await aiResp!.text().catch(() => ""));
+      console.error("AI error", aiResp?.status, errText.slice(0, 500));
+      if (aiResp?.status === 429) {
         return new Response(
           JSON.stringify({ error: "Rate limited. Please try again in a moment." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
-      if (aiResp.status === 402) {
+      if (aiResp?.status === 402) {
         return new Response(
           JSON.stringify({ error: "AI credits exhausted. Please add credits to your workspace." }),
           { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      if (aiResp && [502, 503, 504].includes(aiResp.status)) {
+        return new Response(
+          JSON.stringify({ error: "The AI service is temporarily unavailable. Please try again in a moment." }),
+          { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
       return new Response(JSON.stringify({ error: "AI analysis failed" }), {
