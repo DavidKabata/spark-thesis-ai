@@ -1,11 +1,22 @@
+import { useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import Analyze from "@/components/landing/Analyze";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 
 const Upload = () => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/auth?redirect=/upload", { replace: true });
+    }
+  }, [user, loading, navigate]);
+
   return (
     <main className="min-h-screen bg-background">
       <Navbar />

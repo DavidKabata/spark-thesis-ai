@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,8 @@ import { toast } from "@/hooks/use-toast";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/upload";
   const [mode, setMode] = useState<"signin" | "signup">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,12 +33,12 @@ const Auth = () => {
         });
         if (error) throw error;
         toast({ title: "Welcome to Scholar Spark 🎉", description: "Upload your thesis to get started." });
-        navigate("/upload", { replace: true });
+        navigate(redirectTo, { replace: true });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast({ title: "Signed in", description: "Ready to upload your thesis." });
-        navigate("/upload", { replace: true });
+        navigate(redirectTo, { replace: true });
       }
     } catch (err: any) {
       toast({
