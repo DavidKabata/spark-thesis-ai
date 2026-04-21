@@ -25,7 +25,7 @@ const Hero = () => {
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-            Scholar Spark helps universities, researchers, and industry partners transform
+            Research Venture Ai helps universities, researchers, and industry partners transform
             postgraduate research into real-world products, startups, and solutions —
             unlocking innovation across Africa and beyond.
           </p>
