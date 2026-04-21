@@ -2,7 +2,7 @@ import { Sparkles } from "lucide-react";
 
 const Footer = () => {
   const links = {
-    Platform: ["AI Thesis Assistant", "Startup Engine", "Industry Hub", "Discovery"],
+    Platform: ["AI Thesis Assistant", "Startup Engine", "Industry Hub"],
     Company: ["About", "Mission", "Careers", "Press"],
     Resources: ["Documentation", "Case studies", "Research blog", "Support"],
     Legal: ["Privacy", "Terms", "IP policy", "Cookies"],
