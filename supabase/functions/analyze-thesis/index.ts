@@ -351,7 +351,7 @@ Deno.serve(async (req) => {
         value_create: parsed.value_create,
         value_deliver: parsed.value_deliver,
         value_capture: parsed.value_capture,
-        canvas_data: parsed.canvas,
+        canvas_data: { ...parsed.canvas, __mvp: parsed.mvp ?? null },
       })
       .select()
       .single();
