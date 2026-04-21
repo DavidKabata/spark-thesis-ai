@@ -293,14 +293,15 @@ Deno.serve(async (req) => {
     }
     const parsed = JSON.parse(toolCall.function.arguments);
 
-    // Save to analyses
-    const { data: inserted, error: insertErr } = await adminClient
+    // Save to analyses (admin client to bypass RLS — we already verified the user)
+    const insertClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const { data: inserted, error: insertErr } = await insertClient
       .from("analyses")
       .insert({
         user_id: userId,
         title: parsed.title,
         canvas_type,
-        file_path,
+        file_path: file_path ?? null,
         executive_summary: parsed.executive_summary,
         value_create: parsed.value_create,
         value_deliver: parsed.value_deliver,
