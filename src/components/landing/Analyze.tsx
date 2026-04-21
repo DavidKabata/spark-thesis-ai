@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Upload, FileText, Sparkles, Download, Loader2, CheckCircle2, X, ClipboardPaste } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -33,6 +33,7 @@ const Analyze = () => {
   const [step, setStep] = useState<"idle" | "uploading" | "analyzing" | "done">("idle");
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const onPickFile = useCallback((f: File | null) => {
     if (!f) return;
@@ -193,7 +194,16 @@ const Analyze = () => {
                 </div>
 
                 {mode === "upload" ? (
-                  <label
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => step === "idle" && fileInputRef.current?.click()}
+                    onKeyDown={(e) => {
+                      if ((e.key === "Enter" || e.key === " ") && step === "idle") {
+                        e.preventDefault();
+                        fileInputRef.current?.click();
+                      }
+                    }}
                     onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
                     onDragLeave={() => setDragOver(false)}
                     onDrop={(e) => {
@@ -202,30 +212,34 @@ const Analyze = () => {
                       onPickFile(e.dataTransfer.files?.[0] || null);
                     }}
                     className={cn(
-                      "block border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-smooth",
+                      "block border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-smooth select-none",
                       dragOver ? "border-primary bg-primary/5" : "border-border hover:border-primary/50 hover:bg-secondary/50",
                     )}
                   >
                     <input
+                      ref={fileInputRef}
                       type="file"
-                      accept=".pdf,.docx"
+                      accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                       className="hidden"
-                      onChange={(e) => onPickFile(e.target.files?.[0] || null)}
+                      onChange={(e) => {
+                        onPickFile(e.target.files?.[0] || null);
+                        e.target.value = "";
+                      }}
                       disabled={step !== "idle"}
                     />
                     {file ? (
                       <div className="flex items-center justify-center gap-3">
-                        <FileText className="h-8 w-8 text-primary" />
-                        <div className="text-left">
-                          <div className="font-medium text-foreground">{file.name}</div>
+                        <FileText className="h-8 w-8 text-primary shrink-0" />
+                        <div className="text-left min-w-0">
+                          <div className="font-medium text-foreground truncate">{file.name}</div>
                           <div className="text-xs text-muted-foreground">
-                            {(file.size / 1024 / 1024).toFixed(2)} MB · Click to change
+                            {(file.size / 1024 / 1024).toFixed(2)} MB · Tap to change
                           </div>
                         </div>
                         <button
                           type="button"
-                          onClick={(e) => { e.preventDefault(); setFile(null); }}
-                          className="ml-2 p-1 rounded hover:bg-secondary"
+                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setFile(null); }}
+                          className="ml-2 p-1 rounded hover:bg-secondary shrink-0"
                           aria-label="Remove file"
                         >
                           <X className="h-4 w-4 text-muted-foreground" />
@@ -234,11 +248,11 @@ const Analyze = () => {
                     ) : (
                       <div className="flex flex-col items-center gap-2">
                         <Upload className="h-8 w-8 text-muted-foreground" />
-                        <div className="font-medium text-foreground">Drag & drop or click to upload</div>
-                        <div className="text-xs text-muted-foreground">PDF or DOCX · Max 20MB</div>
+                        <div className="font-medium text-foreground">Tap to upload your thesis</div>
+                        <div className="text-xs text-muted-foreground">PDF or DOCX · Max 20MB · Drag & drop on desktop</div>
                       </div>
                     )}
-                  </label>
+                  </div>
                 ) : (
                   <div>
                     <Textarea
