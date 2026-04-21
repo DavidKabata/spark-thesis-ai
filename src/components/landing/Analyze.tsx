@@ -26,7 +26,9 @@ type Analysis = {
 
 const Analyze = () => {
   const { user, loading: authLoading } = useAuth();
+  const [mode, setMode] = useState<InputMode>("upload");
   const [file, setFile] = useState<File | null>(null);
+  const [abstract, setAbstract] = useState("");
   const [canvasType, setCanvasType] = useState<CanvasType>("business_model");
   const [step, setStep] = useState<"idle" | "uploading" | "analyzing" | "done">("idle");
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
@@ -50,24 +52,43 @@ const Analyze = () => {
 
   const handleAnalyze = async () => {
     if (!user) return;
-    if (!file) {
-      toast({ title: "Choose a file", description: "Upload your thesis first.", variant: "destructive" });
-      return;
+
+    if (mode === "upload") {
+      if (!file) {
+        toast({ title: "Choose a file", description: "Upload your thesis first.", variant: "destructive" });
+        return;
+      }
+    } else {
+      if (abstract.trim().length < 200) {
+        toast({
+          title: "Abstract too short",
+          description: "Please paste at least 200 characters so the AI has enough context.",
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     try {
-      setStep("uploading");
-      const ext = file.name.split(".").pop()?.toLowerCase() || "pdf";
-      const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("theses").upload(path, file, {
-        contentType: file.type || (ext === "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document"),
-        upsert: false,
-      });
-      if (upErr) throw upErr;
+      let payload: Record<string, unknown> = { canvas_type: canvasType };
+
+      if (mode === "upload" && file) {
+        setStep("uploading");
+        const ext = file.name.split(".").pop()?.toLowerCase() || "pdf";
+        const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+        const { error: upErr } = await supabase.storage.from("theses").upload(path, file, {
+          contentType: file.type || (ext === "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document"),
+          upsert: false,
+        });
+        if (upErr) throw upErr;
+        payload.file_path = path;
+      } else {
+        payload.abstract_text = abstract.trim();
+      }
 
       setStep("analyzing");
       const { data, error } = await supabase.functions.invoke("analyze-thesis", {
-        body: { file_path: path, canvas_type: canvasType },
+        body: payload,
       });
       if (error) throw error;
       if (!data?.analysis) throw new Error("No analysis returned");
@@ -88,6 +109,7 @@ const Analyze = () => {
 
   const reset = () => {
     setFile(null);
+    setAbstract("");
     setAnalysis(null);
     setStep("idle");
   };
