@@ -115,7 +115,7 @@ function drawCanvasDiagram(
     doc.text(cell.label.toUpperCase(), cx + 4, cy + 9.5);
 
     // Body text
-    const body = (data?.[cell.key] || "—").trim();
+    const body = String(data?.[cell.key] ?? "—").trim();
     doc.setFont("helvetica", "normal");
     doc.setFontSize(7.2);
     doc.setTextColor(45, 50, 70);
