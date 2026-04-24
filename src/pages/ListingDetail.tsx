@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Tag, Send, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, Tag, Send, CheckCircle2, XCircle, Rocket, Target, Wrench, Ban, Gauge, Calendar, FlaskConical, Users } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { Button } from "@/components/ui/button";
