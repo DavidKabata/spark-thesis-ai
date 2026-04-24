@@ -59,6 +59,135 @@ export type Database = {
         }
         Relationships: []
       }
+      listings: {
+        Row: {
+          analysis_id: string | null
+          asking_price: number | null
+          category: string | null
+          created_at: string
+          currency: string
+          id: string
+          seller_id: string
+          status: string
+          summary: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          analysis_id?: string | null
+          asking_price?: number | null
+          category?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          seller_id: string
+          status?: string
+          summary: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          analysis_id?: string | null
+          asking_price?: number | null
+          category?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          seller_id?: string
+          status?: string
+          summary?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listings_analysis_id_fkey"
+            columns: ["analysis_id"]
+            isOneToOne: false
+            referencedRelation: "analyses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      offer_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          offer_id: string
+          sender_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          offer_id: string
+          sender_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          offer_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offer_messages_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "offers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      offers: {
+        Row: {
+          amount: number
+          buyer_id: string
+          created_at: string
+          currency: string
+          id: string
+          listing_id: string
+          message: string | null
+          seller_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          buyer_id: string
+          created_at?: string
+          currency?: string
+          id?: string
+          listing_id: string
+          message?: string | null
+          seller_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          buyer_id?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          listing_id?: string
+          message?: string | null
+          seller_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offers_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
