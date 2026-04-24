@@ -17,6 +17,7 @@ import { toast } from "@/hooks/use-toast";
 type Listing = {
   id: string;
   seller_id: string;
+  analysis_id: string | null;
   title: string;
   summary: string;
   category: string | null;
@@ -24,6 +25,19 @@ type Listing = {
   currency: string;
   status: string;
   created_at: string;
+};
+
+type Mvp = {
+  name?: string;
+  one_liner?: string;
+  target_user?: string;
+  core_problem?: string;
+  core_features?: string[];
+  out_of_scope?: string[];
+  tech_stack?: string;
+  success_metrics?: string[];
+  timeline_weeks?: number;
+  first_experiment?: string;
 };
 
 type Offer = {
