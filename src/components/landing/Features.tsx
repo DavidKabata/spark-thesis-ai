@@ -1,4 +1,5 @@
-import { Brain, Rocket, Building2, Scale } from "lucide-react";
+import { Brain, Rocket, Building2, Scale, Store } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const features = [
   {
@@ -25,6 +26,13 @@ const features = [
     description: "IP guidance, licensing pathways, and curated funding opportunities for emerging innovators.",
     accent: false,
   },
+  {
+    icon: Store,
+    title: "Innovation Deal Marketplace",
+    description: "Browse, buy, and negotiate research-backed innovations. List your own discoveries for licensing or acquisition.",
+    accent: false,
+    link: "/marketplace",
+  },
 ];
 
 const Features = () => {
@@ -43,16 +51,15 @@ const Features = () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {features.map((feature, i) => {
+          {features.map((feature) => {
             const Icon = feature.icon;
-            return (
+            const CardContent = (
               <div
-                key={feature.title}
-                className={`group relative rounded-2xl p-7 border transition-smooth hover:-translate-y-1 ${
+                className={`group relative rounded-2xl p-7 border transition-smooth hover:-translate-y-1 h-full ${
                   feature.accent
-                    ? "bg-primary text-primary-foreground border-primary lg:row-span-2 lg:col-span-1 shadow-elegant"
+                    ? "bg-primary text-primary-foreground border-primary lg:row-span-2 shadow-elegant"
                     : "bg-card border-border hover:border-primary/30 hover:shadow-card"
-                }`}
+                } ${feature.link ? "cursor-pointer" : ""}`}
               >
                 <div className={`inline-flex h-11 w-11 items-center justify-center rounded-xl mb-6 transition-smooth ${
                   feature.accent
@@ -76,6 +83,24 @@ const Features = () => {
                     </div>
                   </div>
                 )}
+
+                {feature.link && (
+                  <div className="mt-6 pt-4 border-t border-border">
+                    <span className="text-sm font-medium text-primary group-hover:underline">
+                      Explore marketplace →
+                    </span>
+                  </div>
+                )}
+              </div>
+            );
+
+            return feature.link ? (
+              <Link key={feature.title} to={feature.link} className="block h-full">
+                {CardContent}
+              </Link>
+            ) : (
+              <div key={feature.title} className="h-full">
+                {CardContent}
               </div>
             );
           })}
