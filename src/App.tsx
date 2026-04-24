@@ -23,6 +23,9 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/upload" element={<Upload />} />
+          <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/marketplace/new" element={<NewListing />} />
+          <Route path="/marketplace/:id" element={<ListingDetail />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
