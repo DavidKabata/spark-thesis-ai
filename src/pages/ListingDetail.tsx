@@ -61,6 +61,7 @@ const ListingDetail = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [listing, setListing] = useState<Listing | null>(null);
+  const [mvp, setMvp] = useState<Mvp | null>(null);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const [loading, setLoading] = useState(true);
@@ -71,7 +72,18 @@ const ListingDetail = () => {
   const load = useCallback(async () => {
     if (!id) return;
     const { data: l } = await supabase.from("listings").select("*").eq("id", id).maybeSingle();
-    setListing(l as Listing | null);
+    const listingRow = l as Listing | null;
+    setListing(listingRow);
+
+    if (listingRow?.analysis_id) {
+      const { data: a } = await supabase
+        .from("analyses").select("canvas_data").eq("id", listingRow.analysis_id).maybeSingle();
+      const canvas = (a?.canvas_data ?? null) as { __mvp?: Mvp | null } | null;
+      setMvp(canvas?.__mvp ?? null);
+    } else {
+      setMvp(null);
+    }
+
     const { data: o } = await supabase
       .from("offers").select("*").eq("listing_id", id).order("created_at", { ascending: false });
     const offerList = (o ?? []) as Offer[];
