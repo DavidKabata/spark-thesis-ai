@@ -14,7 +14,24 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import { z } from "zod";
 
-type AnalysisOpt = { id: string; title: string; executive_summary: string | null };
+type Mvp = {
+  name?: string;
+  one_liner?: string;
+  target_user?: string;
+  core_problem?: string;
+  core_features?: string[];
+  out_of_scope?: string[];
+  tech_stack?: string;
+  success_metrics?: string[];
+  timeline_weeks?: number;
+  first_experiment?: string;
+};
+type AnalysisOpt = {
+  id: string;
+  title: string;
+  executive_summary: string | null;
+  canvas_data: { __mvp?: Mvp | null } | null;
+};
 
 const schema = z.object({
   title: z.string().trim().min(3).max(160),
@@ -43,18 +60,28 @@ const NewListing = () => {
     if (!user) return;
     supabase
       .from("analyses")
-      .select("id,title,executive_summary")
+      .select("id,title,executive_summary,canvas_data")
       .order("created_at", { ascending: false })
-      .then(({ data }) => setAnalyses(data ?? []));
+      .then(({ data }) => setAnalyses((data ?? []) as unknown as AnalysisOpt[]));
   }, [user]);
 
   const onPickAnalysis = (id: string) => {
     setAnalysisId(id);
     const a = analyses.find((x) => x.id === id);
-    if (a) {
-      if (!title) setTitle(a.title);
-      if (!summary && a.executive_summary) setSummary(a.executive_summary);
-    }
+    if (!a) return;
+    const mvp = a.canvas_data?.__mvp;
+    // Prefer the MVP name + pitch — that's what's actually for sale
+    const newTitle = mvp?.name || a.title;
+    const pitch = mvp?.one_liner ? mvp.one_liner : "";
+    const features = mvp?.core_features?.length
+      ? `\n\nCore features:\n• ${mvp.core_features.join("\n• ")}`
+      : "";
+    const target = mvp?.target_user ? `\n\nTarget user: ${mvp.target_user}` : "";
+    const newSummary = pitch
+      ? `${pitch}${target}${features}`.trim()
+      : a.executive_summary || "";
+    if (!title || title === a.title) setTitle(newTitle);
+    if (!summary && newSummary) setSummary(newSummary);
   };
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -108,15 +135,18 @@ const NewListing = () => {
               <form onSubmit={onSubmit} className="space-y-5">
                 {analyses.length > 0 && (
                   <div className="space-y-2">
-                    <Label>Link to an analysis (optional)</Label>
+                    <Label>List the MVP from one of your analyses</Label>
                     <Select value={analysisId} onValueChange={onPickAnalysis}>
-                      <SelectTrigger><SelectValue placeholder="Pick one of your analyses" /></SelectTrigger>
+                      <SelectTrigger><SelectValue placeholder="Pick an analysis to publish its MVP" /></SelectTrigger>
                       <SelectContent>
                         {analyses.map((a) => (
-                          <SelectItem key={a.id} value={a.id}>{a.title}</SelectItem>
+                          <SelectItem key={a.id} value={a.id}>
+                            {a.canvas_data?.__mvp?.name ? `${a.canvas_data.__mvp.name} — ${a.title}` : a.title}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
+                    <p className="text-xs text-muted-foreground">We'll prefill the MVP name, pitch, target user, and core features. You can edit before publishing.</p>
                   </div>
                 )}
                 <div className="space-y-2">
