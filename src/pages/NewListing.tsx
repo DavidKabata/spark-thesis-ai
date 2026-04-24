@@ -135,15 +135,18 @@ const NewListing = () => {
               <form onSubmit={onSubmit} className="space-y-5">
                 {analyses.length > 0 && (
                   <div className="space-y-2">
-                    <Label>Link to an analysis (optional)</Label>
+                    <Label>List the MVP from one of your analyses</Label>
                     <Select value={analysisId} onValueChange={onPickAnalysis}>
-                      <SelectTrigger><SelectValue placeholder="Pick one of your analyses" /></SelectTrigger>
+                      <SelectTrigger><SelectValue placeholder="Pick an analysis to publish its MVP" /></SelectTrigger>
                       <SelectContent>
                         {analyses.map((a) => (
-                          <SelectItem key={a.id} value={a.id}>{a.title}</SelectItem>
+                          <SelectItem key={a.id} value={a.id}>
+                            {a.canvas_data?.__mvp?.name ? `${a.canvas_data.__mvp.name} — ${a.title}` : a.title}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
+                    <p className="text-xs text-muted-foreground">We'll prefill the MVP name, pitch, target user, and core features. You can edit before publishing.</p>
                   </div>
                 )}
                 <div className="space-y-2">
