@@ -60,18 +60,28 @@ const NewListing = () => {
     if (!user) return;
     supabase
       .from("analyses")
-      .select("id,title,executive_summary")
+      .select("id,title,executive_summary,canvas_data")
       .order("created_at", { ascending: false })
-      .then(({ data }) => setAnalyses(data ?? []));
+      .then(({ data }) => setAnalyses((data ?? []) as unknown as AnalysisOpt[]));
   }, [user]);
 
   const onPickAnalysis = (id: string) => {
     setAnalysisId(id);
     const a = analyses.find((x) => x.id === id);
-    if (a) {
-      if (!title) setTitle(a.title);
-      if (!summary && a.executive_summary) setSummary(a.executive_summary);
-    }
+    if (!a) return;
+    const mvp = a.canvas_data?.__mvp;
+    // Prefer the MVP name + pitch — that's what's actually for sale
+    const newTitle = mvp?.name || a.title;
+    const pitch = mvp?.one_liner ? mvp.one_liner : "";
+    const features = mvp?.core_features?.length
+      ? `\n\nCore features:\n• ${mvp.core_features.join("\n• ")}`
+      : "";
+    const target = mvp?.target_user ? `\n\nTarget user: ${mvp.target_user}` : "";
+    const newSummary = pitch
+      ? `${pitch}${target}${features}`.trim()
+      : a.executive_summary || "";
+    if (!title || title === a.title) setTitle(newTitle);
+    if (!summary && newSummary) setSummary(newSummary);
   };
 
   const onSubmit = async (e: React.FormEvent) => {
