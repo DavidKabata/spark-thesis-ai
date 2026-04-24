@@ -14,7 +14,24 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import { z } from "zod";
 
-type AnalysisOpt = { id: string; title: string; executive_summary: string | null };
+type Mvp = {
+  name?: string;
+  one_liner?: string;
+  target_user?: string;
+  core_problem?: string;
+  core_features?: string[];
+  out_of_scope?: string[];
+  tech_stack?: string;
+  success_metrics?: string[];
+  timeline_weeks?: number;
+  first_experiment?: string;
+};
+type AnalysisOpt = {
+  id: string;
+  title: string;
+  executive_summary: string | null;
+  canvas_data: { __mvp?: Mvp | null } | null;
+};
 
 const schema = z.object({
   title: z.string().trim().min(3).max(160),
