@@ -200,6 +200,97 @@ const ListingDetail = () => {
             <p className="text-xl font-semibold text-foreground">{formatPrice(listing.asking_price, listing.currency)}</p>
           </div>
 
+          {mvp && (
+            <Card className="mb-10 border-primary/20 bg-primary/5">
+              <CardHeader>
+                <div className="flex items-center gap-2 text-sm uppercase tracking-wider text-primary font-medium mb-1">
+                  <Rocket className="h-4 w-4" /> The MVP on offer
+                </div>
+                <CardTitle className="font-display text-3xl tracking-tight">{mvp.name || listing.title}</CardTitle>
+                {mvp.one_liner && (
+                  <p className="text-base text-muted-foreground leading-relaxed pt-2">{mvp.one_liner}</p>
+                )}
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {mvp.target_user && (
+                    <div>
+                      <div className="flex items-center gap-2 text-sm font-semibold mb-1"><Users className="h-4 w-4 text-primary" /> Target user</div>
+                      <p className="text-sm text-muted-foreground">{mvp.target_user}</p>
+                    </div>
+                  )}
+                  {mvp.core_problem && (
+                    <div>
+                      <div className="flex items-center gap-2 text-sm font-semibold mb-1"><Target className="h-4 w-4 text-primary" /> Core problem</div>
+                      <p className="text-sm text-muted-foreground">{mvp.core_problem}</p>
+                    </div>
+                  )}
+                </div>
+
+                {mvp.core_features?.length ? (
+                  <div>
+                    <div className="flex items-center gap-2 text-sm font-semibold mb-2"><Wrench className="h-4 w-4 text-primary" /> Core features</div>
+                    <ul className="space-y-1.5">
+                      {mvp.core_features.map((f, i) => (
+                        <li key={i} className="text-sm text-muted-foreground flex gap-2">
+                          <span className="text-primary mt-0.5">•</span><span>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+
+                {mvp.out_of_scope?.length ? (
+                  <div>
+                    <div className="flex items-center gap-2 text-sm font-semibold mb-2"><Ban className="h-4 w-4 text-muted-foreground" /> Out of scope</div>
+                    <ul className="space-y-1.5">
+                      {mvp.out_of_scope.map((f, i) => (
+                        <li key={i} className="text-sm text-muted-foreground flex gap-2">
+                          <span className="text-muted-foreground mt-0.5">•</span><span>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+
+                {mvp.success_metrics?.length ? (
+                  <div>
+                    <div className="flex items-center gap-2 text-sm font-semibold mb-2"><Gauge className="h-4 w-4 text-primary" /> Success metrics</div>
+                    <ul className="space-y-1.5">
+                      {mvp.success_metrics.map((f, i) => (
+                        <li key={i} className="text-sm text-muted-foreground flex gap-2">
+                          <span className="text-primary mt-0.5">•</span><span>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 border-t border-border">
+                  {mvp.tech_stack && (
+                    <div>
+                      <div className="flex items-center gap-2 text-sm font-semibold mb-1"><Wrench className="h-4 w-4 text-primary" /> Tech stack</div>
+                      <p className="text-sm text-muted-foreground">{mvp.tech_stack}</p>
+                    </div>
+                  )}
+                  {mvp.timeline_weeks ? (
+                    <div>
+                      <div className="flex items-center gap-2 text-sm font-semibold mb-1"><Calendar className="h-4 w-4 text-primary" /> Timeline</div>
+                      <p className="text-sm text-muted-foreground">~{mvp.timeline_weeks} weeks to ship</p>
+                    </div>
+                  ) : null}
+                </div>
+
+                {mvp.first_experiment && (
+                  <div>
+                    <div className="flex items-center gap-2 text-sm font-semibold mb-1"><FlaskConical className="h-4 w-4 text-primary" /> First validation experiment</div>
+                    <p className="text-sm text-muted-foreground">{mvp.first_experiment}</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
           <Separator className="my-8" />
 
           {!isSeller && listing.status === "active" && (
