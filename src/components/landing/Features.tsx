@@ -1,4 +1,5 @@
-import { Brain, Rocket, Building2, Scale } from "lucide-react";
+import { Brain, Rocket, Building2, Scale, Store } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const features = [
   {
@@ -24,6 +25,13 @@ const features = [
     title: "Commercialization Toolkit",
     description: "IP guidance, licensing pathways, and curated funding opportunities for emerging innovators.",
     accent: false,
+  },
+  {
+    icon: Store,
+    title: "Innovation Deal Marketplace",
+    description: "Browse, buy, and negotiate research-backed innovations. List your own discoveries for licensing or acquisition.",
+    accent: false,
+    link: "/marketplace",
   },
 ];
 
