@@ -24,6 +24,7 @@ const Navbar = () => {
 
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
           <Link to="/upload" className="hover:text-foreground transition-smooth">Upload</Link>
+          <Link to="/marketplace" className="hover:text-foreground transition-smooth">Marketplace</Link>
           <a href="/#features" className="hover:text-foreground transition-smooth">Features</a>
           <a href="/#how" className="hover:text-foreground transition-smooth">How it works</a>
           <a href="/#audience" className="hover:text-foreground transition-smooth">For You</a>
